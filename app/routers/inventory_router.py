@@ -7,6 +7,8 @@ from db.config import get_db
 
 # import schemas
 from schemas.inventory_schema import InventoryCreate, InventoryOut
+from schemas.stock_schema import StockCreate, StockOut
+from schemas.sale_schema import SaleCreate, SaleOut
 
 # import the services
 from services.inventory_service import InventoryService

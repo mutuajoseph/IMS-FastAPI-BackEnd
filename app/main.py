@@ -14,7 +14,7 @@ from models.stocks import StockModel
 Base.metadata.create_all(bind=engine)
 
 #import the routers
-from routers import inventory_router, user_router, auth_router
+from routers import inventory_router, user_router, auth_router, stock_router, sales_router
 
 app = FastAPI(
     title="Inventory Management System API",
@@ -52,4 +52,22 @@ app.include_router(
     responses={200:{'description':'Ok'}, 
                201:{'description':'Created'}, 400:{'description':'Bad Request'},
                401:{'description':'Unauthorized'}}
+)
+
+app.include_router(
+    stock_router.router,
+    prefix='/stock',
+    tags=['Stock Operations'],
+    responses={200:{'description':'Ok'}, 
+               201:{'description':'Created'}, 400:{'description':'Bad Request'},
+               401:{'description':'Unauthorized'}}
+)
+
+app.include_router(
+    sales_router.router,
+    prefix='/sales',
+    tags=['Sales Operations'],
+    responses={200:{'description':'Ok'}, 
+               201:{'description':'Created'}, 400:{'description':'Bad Request'},
+               401:{'description':'Unauthorized'}} 
 )

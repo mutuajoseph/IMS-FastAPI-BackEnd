@@ -3,9 +3,13 @@ from fastapi import HTTPException
 
 # import the model
 from models.inventories import InventoryModel
+from models.stocks import StockModel
+from models.sales import SaleModel
 
 # import the schema
 from schemas.inventory_schema import InventoryCreate
+from schemas.stock_schema import StockCreate
+from schemas.sale_schema import SaleCreate
 
 class InventoryService:
 
