@@ -13,3 +13,6 @@ class StockOut(StockCreate):
     id: int
     created_on: Optional[datetime]
 
+    class Config:
+        orm_mode = True
+

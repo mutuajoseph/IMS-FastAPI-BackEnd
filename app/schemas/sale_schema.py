@@ -12,3 +12,6 @@ class SaleCreate(SaleBase):
 class SaleOut(SaleCreate):
     id: int
     created_on: Optional[datetime]
+
+    class Config:
+        orm_mode = True

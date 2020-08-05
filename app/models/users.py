@@ -11,4 +11,4 @@ class UserModel(Base):
     password =  Column(String, nullable=False)
     created_on = Column(DateTime(timezone=True), default=func.now(), nullable=True)
     active = Column(Boolean, default=True)
-    inventories = relationship('InentoryModel', back_populates='owner')
+    inventories = relationship('InventoryModel', back_populates='owner')
