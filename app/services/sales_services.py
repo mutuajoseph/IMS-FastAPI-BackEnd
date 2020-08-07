@@ -23,3 +23,5 @@ class SalesService:
         db.commit()
         db.refresh(new_sale)
         return new_sale
+
+        

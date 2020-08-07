@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 
 
 # database imports
@@ -51,7 +51,8 @@ app.include_router(
     tags=['Inventory Operations'],
     responses={200:{'description':'Ok'}, 
                201:{'description':'Created'}, 400:{'description':'Bad Request'},
-               401:{'description':'Unauthorized'}}
+               401:{'description':'Unauthorized'}},
+    dependencies=[Depends(auth_router.get_identity)]
 )
 
 app.include_router(

@@ -1,28 +1,34 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import timedelta, datetime
-from jose import JWTError, jwt
+from jose import jwt, JWTError
 from db.config import get_db
 
 
 # models imports
 from models.users import UserModel
 
+# service imports
+from services.user_service import UserService
+
+# schema imports
+from schemas.user_schema import UserCreate, UserOut
+
 pwd_context = CryptContext(schemes=['bcrypt'])
 
 router = APIRouter()
 
 # setups for JWT
-SECRET_KEY = 'SOME-SECRET-KEY'
-ALGORITHM = 'H256'
+SECRET_KEY = "SOME-SECRET-KEY"
+ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # setup the security
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 # auth basemodel
 class Token(BaseModel):
@@ -63,6 +69,7 @@ def create_access_token(identity:dict, expires_delta: Optional[timedelta] = None
 
     # encode the token
     encoded_jwt = jwt.encode(claims=new_identity, key=SECRET_KEY, algorithm=ALGORITHM)
+    print(encoded_jwt)
 
     return encoded_jwt
 
@@ -86,7 +93,11 @@ async def get_identity(token: str = Depends(oauth2_scheme)):
 
     return identity
 
-@router.post('', response_model=Token)
+@router.post('/token',
+summary="Login to access token",
+response_model=Token,
+status_code=200
+)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session= Depends(get_db)):
     user = authenticate_user(db=db, username=form_data.username, password=form_data.password)
     if not user:
@@ -99,3 +110,9 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session= D
     token = create_access_token(identity={'sub': user.id}, expires_delta=access_token_expires)
     return {"access_token": token, "token_type": "bearer"}
 
+@router.post('/register',
+summary = "Create a new user",
+status_code= 200
+)
+async def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    return UserService.create_a_new_user(user=user, db=db)
